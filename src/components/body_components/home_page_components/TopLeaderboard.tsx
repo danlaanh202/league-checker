@@ -1,15 +1,26 @@
-import React from "react";
+import ApiServices from "@/api_services/ApiServices";
+import { ISummoner, ITopLeaderboard } from "@/types";
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 const StyledTopLeaderboard = styled.div`
   display: flex;
   gap: 12px;
 `;
 const TopLeaderboard = () => {
+  const [topPlayers, setTopPlayers] = useState<ITopLeaderboard[] | any[]>([]);
+  useEffect(() => {
+    ApiServices.getTopPlayer()
+      .then((res) => setTopPlayers(res.data.slice(0, 3)))
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
     <StyledTopLeaderboard>
-      <LeaderboardItem />
-      <LeaderboardItem />
-      <LeaderboardItem />
+      {topPlayers &&
+        topPlayers?.length > 0 &&
+        topPlayers?.map((item, index) => (
+          <LeaderboardItem summoner={item} num={index} key={item.summonerId} />
+        ))}
     </StyledTopLeaderboard>
   );
 };
@@ -95,19 +106,34 @@ const StyledLeaderboardItem = styled.div`
     }
   }
 `;
-const LeaderboardItem = () => {
+const LeaderboardItem = ({
+  summoner,
+  num,
+}: {
+  summoner: ITopLeaderboard;
+  num: number;
+}) => {
+  const [player, setPlayer] = useState<ISummoner>();
+  useEffect(() => {
+    ApiServices.getPlayerBySummonerId(summoner.summonerId)
+      .then((res) => setPlayer(res.data))
+      .catch((err) => console.log(err));
+  }, [summoner.summonerId]);
   return (
     <StyledLeaderboardItem>
-      <div className="ribbon">#1</div>
+      <div className="ribbon">#{num + 1}</div>
       <div className="avatar-container">
         <div className="image-container">
-          <img src="/images/splash_art.jpeg" alt="" />
+          <img
+            src={`https://ddragon.leagueoflegends.com/cdn/13.12.1/img/profileicon/${player?.profileIconId}.png`}
+            alt=""
+          />
         </div>
       </div>
-      <div className="leaderboard-name">NattyNatt</div>
+      <div className="leaderboard-name">{summoner.summonerName}</div>
       <div className="leaderboard-label">League points</div>
-      <div className="leaderboard-point">1,824</div>
-      <div className="leaderboard-area">EU WEST</div>
+      <div className="leaderboard-point">{summoner.leaguePoints}</div>
+      <div className="leaderboard-area">VN</div>
       <button className="leaderboard-btn">Leaderboard</button>
     </StyledLeaderboardItem>
   );

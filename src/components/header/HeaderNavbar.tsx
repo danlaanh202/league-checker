@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 
 const StyledHeaderNavBar = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
-
+  flex: 1;
   .nav-active {
     ::before {
       background-color: #c39b3b;
@@ -34,17 +35,19 @@ const StyledNavItem = styled.a`
   }
 `;
 const HeaderNavbar = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const handleChangeActive = (num: number) => {
-    setActiveIndex(num);
+  const pathName = usePathname();
+  const router = useRouter();
+  const navigateBetweenNav = (url: string) => {
+    router.push(url);
   };
   return (
     <StyledHeaderNavBar>
       {navbarList.map((item, index) => (
         <HeaderNavItem
-          title={item}
-          isActive={index == activeIndex}
-          handleChangeActive={() => handleChangeActive(index)}
+          title={item.title}
+          isActive={pathName === item.url}
+          navigate={() => navigateBetweenNav(item.url)}
+          key={item.url}
         />
       ))}
     </StyledHeaderNavBar>
@@ -53,20 +56,26 @@ const HeaderNavbar = () => {
 const HeaderNavItem = ({
   title,
   isActive,
-  handleChangeActive,
+  navigate,
 }: {
   title: String;
   isActive: boolean;
-  handleChangeActive: () => void;
+  navigate: () => void;
 }) => {
   return (
-    <StyledNavItem
-      onClick={handleChangeActive}
-      className={isActive ? "nav-active" : ""}
-    >
+    <StyledNavItem onClick={navigate} className={isActive ? "nav-active" : ""}>
       <span>{title}</span>
     </StyledNavItem>
   );
 };
-const navbarList = ["Home", "Leaderboards"];
+const navbarList = [
+  {
+    title: "Home",
+    url: "/",
+  },
+  {
+    title: "Leaderboards",
+    url: "/lol/leaderboards/point",
+  },
+];
 export default HeaderNavbar;
