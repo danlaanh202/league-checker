@@ -40,6 +40,15 @@ class ApiServices {
       throw new Error("");
     }
   }
+  async getLeaderboardTablePlayer(page: number) {
+    try {
+      return await axios.get(
+        `${ApiUrl.leaderboardTableUrl}${page}&api_key=${process.env.RIOT_KEY}`
+      );
+    } catch (error) {
+      throw new Error("");
+    }
+  }
 }
 
 export default new ApiServices();

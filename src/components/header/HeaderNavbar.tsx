@@ -77,5 +77,9 @@ const navbarList = [
     title: "Leaderboards",
     url: "/lol/leaderboards/point",
   },
+  {
+    title: "Champions",
+    url: "/lol/champions",
+  },
 ];
 export default HeaderNavbar;

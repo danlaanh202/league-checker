@@ -15,5 +15,7 @@ class ApiUrl {
   static summonerBySummonerId: string =
     "https://vn2.api.riotgames.com/lol/summoner/v4/summoners";
   static freeChampsUrl: string = `https://vn2.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=${process.env.RIOT_KEY}`;
+  static leaderboardTableUrl: string =
+    "https://vn2.api.riotgames.com/lol/league-exp/v4/entries/RANKED_SOLO_5x5/CHALLENGER/I?page=";
 }
 export default ApiUrl;
